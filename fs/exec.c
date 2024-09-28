@@ -1813,12 +1813,6 @@ static int exec_binprm(struct linux_binprm *bprm)
 	return 0;
 }
 
-#ifdef CONFIG_KSU
-extern bool ksu_execveat_hook __read_mostly;
-extern int ksu_handle_execveat(int *fd, struct filename **filename_ptr, void *argv, void *envp, int *flags);
-extern int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr, void *argv, void *envp, int *flags);
-#endif
-
 /*
  * sys_execve() executes a new program.
  */
@@ -1827,13 +1821,6 @@ static int bprm_execve(struct linux_binprm *bprm,
 {
 	struct file *file;
 	int retval;
-	
-	#ifdef CONFIG_KSU
-	if (unlikely(ksu_execveat_hook))
-	   ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
-	else
-	   ksu_handle_execveat_sucompat(&fd, &filename, &argv, &envp, &flags);
-	#endif
 
 	retval = prepare_bprm_creds(bprm);
 	if (retval)
