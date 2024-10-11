@@ -17,7 +17,7 @@ export CC=$KERNEL_DIR/WeebX-Clang-19.1.2/bin/clang
 
 export PATH=$KERNEL_DIR/WeebX-Clang-19.1.2/bin:$PATH
 export PATH=$KERNEL_DIR/build-tools/path/linux-x86:$PATH
-#export PATH=$KERNEL_DIR/gas/linux-x86:$PATH
+export PATH=$KERNEL_DIR/gas/linux-x86:$PATH
 #export TARGET_SOC=s5e9925
 export LLVM=1 
 #export LLVM_IAS=1
@@ -27,7 +27,7 @@ export KBUILD_BUILD_USER="unknown"
 
 IMAGE="$(pwd)/arch/arm64/boot/Image.gz"
 
-export KERNEL_MAKE_ENV="LOCALVERSION=-SUPER.KERNEL.TOPAZ"
+#KERNEL_MAKE_ENV="LOCALVERSION=-SUPER.KERNEL.TOPAZ"
 
 # Date and Time
 export DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
@@ -42,11 +42,11 @@ clang(){
   fi
 }
 
-#gas(){
-#  if [ ! -d $KERNEL_DIR/gas/linux-x86 ]; then
-#    git clone https://android.googlesource.com/platform/prebuilts/gas/linux-x86 $KERNEL_DIR/gas/linux-x86
-#  fi
-#}
+gas(){
+  if [ ! -d $KERNEL_DIR/gas/linux-x86 ]; then
+    git clone https://android.googlesource.com/platform/prebuilts/gas/linux-x86 $KERNEL_DIR/gas/linux-x86
+  fi
+}
 
 build_tools(){
   if [ ! -d $KERNEL_DIR/build-tools ]; then
@@ -58,8 +58,8 @@ build_kernel() {
 
   echo "***** Compiling kernel *****"
   [ ! -d "out" ] && mkdir out
-  make -j$(nproc) -C $(pwd) $KERNEL_MAKE_ENV ${DEFCONFIG}
-  make -j$(nproc) -C $(pwd) $KERNEL_MAKE_ENV
+  make -j$(nproc) -C $(pwd) ${DEFCONFIG}
+  make -j$(nproc) -C $(pwd)
 
   echo "**** Verify Image ****"
   ls $(pwd)/arch/arm64/boot/Image.gz
@@ -82,7 +82,7 @@ cd ..
 
 # Run once
 clang
-#gas
+gas
 build_tools
 build_kernel
 anykernel3
