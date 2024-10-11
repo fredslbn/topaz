@@ -11,6 +11,3 @@ task:
     - pacman -Sy --needed --noconfirm archlinux-keyring
     - pacman -Syyu --needed --noconfirm wget xmlto base-devel inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz git python zip fortune-mod
     - curl -LSs "https://raw.githubusercontent.com/fredslbn/ksugki/main/kernel/setup.sh" | bash -s main
-
-  Build_script:
-    - bash clanglinaro.sh
