@@ -10,10 +10,7 @@ task:
   setup_script:
     - pacman -Sy --needed --noconfirm archlinux-keyring
     - pacman -Syyu --needed --noconfirm wget xmlto base-devel inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz git python zip fortune-mod
-    - cd KernelSU
-    - git submodule update --init --recursive --remote
-    - git rev-list --count HEAD
-    - cd ..
+    - curl -LSs "https://raw.githubusercontent.com/fredslbn/ksugki/main/kernel/setup.sh" | bash -s main
 
   Build_script:
-    - bash clang.sh
+    - bash clanglinaro.sh

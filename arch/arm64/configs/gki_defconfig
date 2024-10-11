@@ -3,6 +3,9 @@ CONFIG_KSU=y
 
 ## SUSFS4KSU
 CONFIG_KSU_SUSFS=y
+## KSU non-kprobe hook patches applied, 
+## then you have to DISABLE the CONFIG_KSU_SUSFS_SUS_SU option.
+CONFIG_KSU_SUSFS_SUS_SU=y
 CONFIG_INIT_STACK_ALL_ZERO=y
 
 ##

@@ -5,7 +5,7 @@
 # begin properties
 properties() { '
 kernel.string=SUPER.KERNEL TOPAZ || SAPPHIRE
-do.devicecheck=0
+do.devicecheck=1
 do.modules=0
 do.systemless=1
 do.cleanup=1
@@ -13,28 +13,43 @@ do.cleanuponabort=0
 device.name1=topaz
 device.name2=tapas
 device.name3=sapphire
-supported.versions=
+device.name3=sapphiren
+supported.versions=13 - 15
 '; } # end properties
 
 # shell variables
-block=boot
-is_slot_device=auto
-ramdisk_compression=auto
-patch_vbmeta_flag=auto
-no_magisk_check=1
+slot=$(find_slot);
+block=/dev/block/bootdevice/by-name/boot$slot;
+is_slot_device=1;
+ramdisk_compression=auto;
+patch_vbmeta_flag=auto;
 
 
 ## AnyKernel methods (DO NOT CHANGE)
 # import patching functions/variables - see for reference
 . tools/ak3-core.sh;
 
+## AnyKernel file attributes
+# set permissions/ownership for included ramdisk files
+set_perm_recursive 0 0 755 644 $ramdisk/*;
+set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
 
-# boot install
-if [ -L "/dev/block/bootdevice/by-name/init_boot_a" -o -L "/dev/block/by-name/init_boot_a" ]; then
-    split_boot # for devices with init_boot ramdisk
-    flash_boot # for devices with init_boot ramdisk
-else
-    dump_boot # use split_boot to skip ramdisk unpack, e.g. for devices with init_boot ramdisk
-    write_boot # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
-fi
-## end boot install
+## AnyKernel install
+split_boot;
+
+## Selinux Permissive
+#patch_cmdline androidboot.selinux androidboot.selinux=permissive
+
+# migrate from /overlay to /overlay.d to enable SAR Magisk
+if [ -d $ramdisk/overlay ]; then
+  rm -rf $ramdisk/overlay;
+fi;
+
+# end ramdisk changes
+
+flash_boot;
+## end install
+
+sleep 3
+ui_print ""
+ui_print "kernel installed successfully"
